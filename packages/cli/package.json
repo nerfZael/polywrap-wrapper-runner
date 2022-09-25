@@ -29,6 +29,8 @@
     "test": "jest test --passWithNoTests"
   },
   "dependencies": {
+    "@polywrap/uri-resolvers-js": "0.8.0",
+    "@polywrap/uri-resolver-extensions-js": "0.8.0",
     "@nerfzael/ens-contenthash-resolver-plugin-wrapper": "0.2.0",
     "@nerfzael/http-plugin-wrapper": "0.3.0",
     "@nerfzael/ipfs-ens-contenthash-resolver-plugin-wrapper": "0.2.0",

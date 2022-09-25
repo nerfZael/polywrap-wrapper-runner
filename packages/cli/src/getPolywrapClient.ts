@@ -9,6 +9,16 @@ import { ensContenthashResolverPlugin } from "@nerfzael/ens-contenthash-resolver
 import { ipfsEnsContenthashResolverPlugin } from "@nerfzael/ipfs-ens-contenthash-resolver-plugin-wrapper";
 import { ocrEnsContenthashResolverPlugin } from "@nerfzael/ocr-ens-contenthash-resolver-plugin-wrapper";
 import { wrapClientPlugin } from "@nerfzael/wrap-client-plugin-wrapper";
+import {
+  WrapperCache,
+  PackageToWrapperCacheResolver,
+  RecursiveResolver,
+  buildUriResolver,
+  LegacyRedirectsResolver,
+  LegacyPluginsResolver,
+} from "@polywrap/uri-resolvers-js";
+import { ExtendableUriResolver } from "@polywrap/uri-resolver-extensions-js";
+import { FileSystemCacheResolver } from "./resolvers/FileSystemCacheResolver";
 
 export const allAccessControlledUris = [
   "wrap://ens/ipfs.polywrap.eth",
@@ -54,6 +64,11 @@ export const invokeWithAccessControl = async (
   return polywrapClient.invoke(options);
 };
 
+export const defaultIpfsProviders = [
+  "https://ipfs.wrappers.io",
+  "https://ipfs.io",
+];
+
 export const getPolywrapClient = () => {
   const config = {
     ethereum: {
@@ -84,12 +99,20 @@ export const getPolywrapClient = () => {
         ]
       }
     },
+    {
+      uri: new Uri("wrap://ens/ipfs.polywrap.eth"),
+      env: {
+        provider: defaultIpfsProviders[0],
+        fallbackProviders: defaultIpfsProviders.slice(1),
+      },
+    },
   ];
 
   const interfaces = [
     {
       interface: coreInterfaceUris.uriResolver.uri,
       implementations: [
+        "wrap://ens/fs-resolver.polywrap.eth",
         "wrap://ens/ipfs-resolver.polywrap.eth",
         "wrap://ens/ens-contenthash-resolver.eth",
         "wrap://ens/ipfs-ens-contenthash-resolver.eth",
@@ -138,6 +161,18 @@ export const getPolywrapClient = () => {
     },
   ];
 
+  const resolver = new RecursiveResolver(
+    new PackageToWrapperCacheResolver(
+      new WrapperCache(),
+      buildUriResolver([
+        new LegacyRedirectsResolver(),
+        new LegacyPluginsResolver(),
+        new FileSystemCacheResolver(),
+        new ExtendableUriResolver(),
+      ])
+    )
+  );
+
   const client = process.env.INFURA_PROJECT_ID
     ? new PolywrapClient(
       {
@@ -169,8 +204,9 @@ export const getPolywrapClient = () => {
               })
             }),
           },
-        ]
-      })
+        ],
+        resolver,
+      }, { noDefaults: true})
     : new PolywrapClient({
         envs,
         interfaces,
@@ -194,7 +230,8 @@ export const getPolywrapClient = () => {
             }),
           }
         ],
-      });
+        resolver,
+      }, { noDefaults: true});
 
   return client;
 };
