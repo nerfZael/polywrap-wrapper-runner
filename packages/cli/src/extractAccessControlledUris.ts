@@ -3,8 +3,6 @@ import { allAccessControlledUris } from "./getPolywrapClient";
 import fs from "fs";
 import { appDataPath } from "./main";
 import { WasmWrapper } from "@polywrap/wasm-js";
-import { buildCleanUriHistory } from "@polywrap/uri-resolvers-js";
-
 
 export const extractAccessControlledUris = async (
   uri: string, 
