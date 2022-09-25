@@ -3,19 +3,24 @@ import { program } from "commander";
 import * as dotenv from "dotenv"
 import { getPolywrapClient } from "./getPolywrapClient";
 import { runApp } from "./runApp";
-import fs from "fs";
+import { initAppData } from "./initAppData";
 
 dotenv.config();
 
 const appDataRootPath = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + "/.local/share");
 export const appDataPath = `${appDataRootPath}/pwr`;
+export const polywrapAppDataPath = `${appDataRootPath}/polywrap`;
 
-!fs.existsSync(appDataPath) && fs.mkdirSync(appDataPath);
-!fs.existsSync(`${appDataPath}/cache`) && fs.mkdirSync(`${appDataPath}/cache`);
-!fs.existsSync(`${appDataPath}/cache/wrappers`) && fs.mkdirSync(`${appDataPath}/cache/wrappers`);
-!fs.existsSync(`${appDataPath}/cache/wrappers/ipfs`) && fs.mkdirSync(`${appDataPath}/cache/wrappers/ipfs`);
+export const paths = {
+  cache: {
+    wrappers: {
+      ipfs: `${polywrapAppDataPath}/cache/wrappers/ipfs`,
+    }
+  }
+};
 
 (async () => {
+  initAppData();
 
   program
     .arguments("<string...>")

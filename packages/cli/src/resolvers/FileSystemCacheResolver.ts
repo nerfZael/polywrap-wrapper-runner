@@ -8,7 +8,7 @@ import {
   ResolverWithHistory,
 } from "@polywrap/uri-resolvers-js";
 import fs from "fs";
-import { appDataPath } from "../main";
+import { paths } from "../main";
 
 export class FileSystemCacheResolver extends ResolverWithHistory<unknown> {
   constructor() {
@@ -26,9 +26,9 @@ export class FileSystemCacheResolver extends ResolverWithHistory<unknown> {
     }
     
     const ipfsCid = uri.uri.slice("wrap://ipfs/".length, uri.uri.length);
-    if (!fs.existsSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}`)) {
+    if (!fs.existsSync(`${paths.cache.wrappers.ipfs}/${ipfsCid}`)) {
       return UriResolutionResult.ok(uri);
     }
-    return UriResolutionResult.ok(new Uri(`wrap://file/${appDataPath}/cache/wrappers/ipfs/${ipfsCid}`));
+    return UriResolutionResult.ok(new Uri(`wrap://file/${paths.cache.wrappers.ipfs}/${ipfsCid}`));
   }
 }

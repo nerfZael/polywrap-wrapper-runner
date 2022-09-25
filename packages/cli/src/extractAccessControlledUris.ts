@@ -1,8 +1,6 @@
 import { PolywrapClient, Uri, UriResolutionContext, Wrapper } from "@polywrap/client-js";
 import { allAccessControlledUris } from "./getPolywrapClient";
-import fs from "fs";
-import { appDataPath } from "./main";
-import { WasmWrapper } from "@polywrap/wasm-js";
+import { cacheWrapper } from "./cacheWrapper";
 
 export const extractAccessControlledUris = async (
   uri: string, 
@@ -22,25 +20,7 @@ export const extractAccessControlledUris = async (
   }
   const finalUri = result.value.uri.uri;
   if (finalUri.startsWith("wrap://ipfs/")) {
-    if (!(wrapper instanceof WasmWrapper)) {
-      return;
-    }
-
-    const manifestBuffer = await (wrapper as WasmWrapper).getFile({ path: "wrap.info" });
-    const wrapManifest = await (wrapper as WasmWrapper).getManifest();
-
-    const ipfsCid = finalUri.replace("wrap://ipfs/", "");
-
-    if (!fs.existsSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}`)) {
-      fs.mkdirSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}`);
-    
-      fs.writeFileSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}/wrap.info`, manifestBuffer);
-
-      if (wrapManifest && wrapManifest.type === "wasm") {
-        const wasmModule = await (wrapper as WasmWrapper).getFile({ path: "wrap.wasm" });
-        fs.writeFileSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}/wrap.wasm`, wasmModule);
-      }
-    }
+    cacheWrapper(finalUri, wrapper);  
   }
 
   const manifest = await wrapper.getManifest({ noValidate: false }, polywrapClient);
