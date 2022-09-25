@@ -20,6 +20,7 @@ import {
 import { ExtendableUriResolver } from "@polywrap/uri-resolver-extensions-js";
 import { FileSystemCacheResolver } from "./resolvers/FileSystemCacheResolver";
 import { loggerPlugin } from "@polywrap/logger-plugin-js";
+import { CustomWrapperCache } from "./CustomWrapperCache";
 
 export const allAccessControlledUris = [
   "wrap://ens/ens-resolver.polywrap.eth",
@@ -164,7 +165,7 @@ export const getPolywrapClient = () => {
 
   const resolver = new RecursiveResolver(
     new PackageToWrapperCacheResolver(
-      new WrapperCache(),
+      new CustomWrapperCache(),
       buildUriResolver([
         new LegacyRedirectsResolver(),
         new LegacyPluginsResolver(),

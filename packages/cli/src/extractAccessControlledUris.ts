@@ -18,10 +18,6 @@ export const extractAccessControlledUris = async (
   if (!result.ok) {
     return;
   }
-  const finalUri = result.value.uri.uri;
-  if (finalUri.startsWith("wrap://ipfs/")) {
-    cacheWrapper(finalUri, wrapper);  
-  }
 
   const manifest = await wrapper.getManifest({ noValidate: false }, polywrapClient);
   const importedUris = (manifest.abi.importedModuleTypes || []).map((importedModuleType) => new Uri(importedModuleType.uri).uri);
