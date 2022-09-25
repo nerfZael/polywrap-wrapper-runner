@@ -26,15 +26,20 @@ export const extractAccessControlledUris = async (
       return;
     }
 
-    const manifest = await (wrapper as WasmWrapper).getFile({ path: "wrap.info" });
-    const wasmModule = await (wrapper as WasmWrapper).getFile({ path: "wrap.wasm" });
+    const manifestBuffer = await (wrapper as WasmWrapper).getFile({ path: "wrap.info" });
+    const wrapManifest = await (wrapper as WasmWrapper).getManifest();
+
     const ipfsCid = finalUri.replace("wrap://ipfs/", "");
 
     if (!fs.existsSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}`)) {
       fs.mkdirSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}`);
     
-      fs.writeFileSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}/wrap.info`, manifest);
-      fs.writeFileSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}/wrap.wasm`, wasmModule);
+      fs.writeFileSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}/wrap.info`, manifestBuffer);
+
+      if (wrapManifest && wrapManifest.type === "wasm") {
+        const wasmModule = await (wrapper as WasmWrapper).getFile({ path: "wrap.wasm" });
+        fs.writeFileSync(`${appDataPath}/cache/wrappers/ipfs/${ipfsCid}/wrap.wasm`, wasmModule);
+      }
     }
   }
 
