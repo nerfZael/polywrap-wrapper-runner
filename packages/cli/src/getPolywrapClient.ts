@@ -19,13 +19,10 @@ import {
 } from "@polywrap/uri-resolvers-js";
 import { ExtendableUriResolver } from "@polywrap/uri-resolver-extensions-js";
 import { FileSystemCacheResolver } from "./resolvers/FileSystemCacheResolver";
+import { loggerPlugin } from "@polywrap/logger-plugin-js";
 
 export const allAccessControlledUris = [
-  "wrap://ens/ipfs.polywrap.eth",
-  "wrap://ens/fs.polywrap.eth",
-  "wrap://ens/ipfs-resolver.polywrap.eth",
   "wrap://ens/ens-resolver.polywrap.eth",
-  "wrap://ens/fs-resolver.polywrap.eth",
   "wrap://ens/ethereum.polywrap.eth",
   "wrap://ens/http.polywrap.eth",
   "wrap://ens/ipfs-resolver.polywrap.eth",
@@ -159,6 +156,10 @@ export const getPolywrapClient = () => {
       uri: "wrap://ens/fs-resolver.polywrap.eth",
       plugin: fileSystemResolverPlugin({}),
     },
+    {
+      uri: "wrap://ens/logger.core.polywrap.eth",
+      plugin: loggerPlugin({})
+    }
   ];
 
   const resolver = new RecursiveResolver(

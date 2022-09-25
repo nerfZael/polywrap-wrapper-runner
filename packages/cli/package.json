@@ -43,6 +43,7 @@
     "@polywrap/client-js": "0.8.0",
     "@polywrap/ethereum-plugin-js": "0.8.0",
     "@polywrap/msgpack-js": "0.8.0",
+    "@polywrap/logger-plugin-js": "0.8.0",
     "awilix": "7.0.3",
     "commander": "9.4.0",
     "connect-timeout": "1.9.0",
