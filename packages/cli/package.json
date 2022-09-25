@@ -1,5 +1,5 @@
 {
-  "name": "@nerfzael/polywrap-wrapper-runner",
+  "name": "@nerfzael/pwr",
   "version": "0.1.0",
   "main": "build/main.js",
   "types": "build/main.d.ts",
@@ -29,9 +29,18 @@
     "test": "jest test --passWithNoTests"
   },
   "dependencies": {
-    "@polywrap/client-js": "0.7.0",
-    "@polywrap/ethereum-plugin-js": "0.7.0",
-    "@polywrap/msgpack-js": "0.7.0",
+    "@nerfzael/ens-contenthash-resolver-plugin-wrapper": "0.2.0",
+    "@nerfzael/http-plugin-wrapper": "0.3.0",
+    "@nerfzael/ipfs-ens-contenthash-resolver-plugin-wrapper": "0.2.0",
+    "@nerfzael/ocr-core": "0.4.0",
+    "@nerfzael/ocr-ens-contenthash-resolver-plugin-wrapper": "0.2.0",
+    "@nerfzael/ocr-resolver-plugin-wrapper": "0.4.0",
+    "@nerfzael/wrap-client-plugin-wrapper": "0.4.1",
+    "@polywrap/ipfs-plugin-js": "0.8.0",
+    "@polywrap/ipfs-resolver-plugin-js": "0.8.0",
+    "@polywrap/client-js": "0.8.0",
+    "@polywrap/ethereum-plugin-js": "0.8.0",
+    "@polywrap/msgpack-js": "0.8.0",
     "awilix": "7.0.3",
     "commander": "9.4.0",
     "connect-timeout": "1.9.0",

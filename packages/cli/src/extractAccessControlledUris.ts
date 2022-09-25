@@ -1,4 +1,4 @@
-import { PolywrapClient, Uri } from "@polywrap/client-js";
+import { PolywrapClient, Uri, Wrapper } from "@polywrap/client-js";
 import { allAccessControlledUris } from "./getPolywrapClient";
 
 export const extractAccessControlledUris = async (
@@ -6,17 +6,8 @@ export const extractAccessControlledUris = async (
   polywrapClient: PolywrapClient,
   acessControlledUris: string[]
 ): Promise<void> => {
-  const { wrapper, error: resolutionError } = await polywrapClient.resolveUri(uri);
-
-  if (!wrapper) {
-    if (resolutionError) {
-      throw resolutionError;
-    } else {
-      console.error(`No wrapper found for ${uri}`);
-    }
-    // TODO: return descriptive error
-    throw new Error(`No wrapper found for ${uri}`);
-  }
+  await polywrapClient.tryResolveUri({uri});
+  const wrapper: Wrapper = await polywrapClient["_loadWrapper"]({ uri });
 
   const manifest = await wrapper.getManifest({ noValidate: false }, polywrapClient);
   const importedUris = (manifest.abi.importedModuleTypes || []).map((importedModuleType) => new Uri(importedModuleType.uri).uri);
