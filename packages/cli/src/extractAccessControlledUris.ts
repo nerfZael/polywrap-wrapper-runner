@@ -7,8 +7,14 @@ import { WasmWrapper } from "@polywrap/wasm-js";
 export const extractAccessControlledUris = async (
   uri: string, 
   polywrapClient: PolywrapClient,
-  acessControlledUris: string[]
+  acessControlledUris: string[],
+  visitedUris: Set<string>
 ): Promise<void> => {
+  if (visitedUris.has(uri)) {
+    return;
+  }
+  visitedUris.add(uri);
+
   const result = await polywrapClient.tryResolveUri({uri });
   const wrapper: Wrapper = await polywrapClient["_loadWrapper"]({ uri });
   if (!result.ok) {
@@ -42,6 +48,6 @@ export const extractAccessControlledUris = async (
   }
 
   for (const otherUri of otherUris) {
-    await extractAccessControlledUris(otherUri, polywrapClient, acessControlledUris);
+    await extractAccessControlledUris(otherUri, polywrapClient, acessControlledUris, visitedUris);
   }
 };
