@@ -9,6 +9,9 @@ type Module {
 }
 ```
 
+## Installation
+`npm i -g @nerfzael/pwr`
+
 ## Examples: 
 Input: `pwr wrap://ens/wrap-echo.eth Hello world!`
 Output: `Hello world!`
