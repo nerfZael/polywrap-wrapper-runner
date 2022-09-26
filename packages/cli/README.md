@@ -9,6 +9,9 @@ type Module {
 }
 ```
 
+## Installation
+`npm i -g @nerfzael/pwr`
+
 ## Examples: 
 Input: `pwr wrap://ens/wrap-echo.eth Hello world!`
 Output: `Hello world!`
@@ -19,14 +22,14 @@ Output: `Hello world!`
 Input: `pwr wrap-echo.eth Hello world!`
 Output: `Hello world!`
 
-Input: `pwr wrap://ipfs/Qm Hello world!`
+Input: `pwr wrap://ipfs/QmebzauKAXoYbywLAYdBvKyPhWsDoHfkUC4wffWvjighKT Hello world!`
 Output: `Hello world!`
 
-Input: `pwr ipfs/Qm Hello world!`
+Input: `pwr ipfs/QmebzauKAXoYbywLAYdBvKyPhWsDoHfkUC4wffWvjighKT Hello world!`
 Output: `Hello world!`
 
-Input: `pwr ipfs://Qm Hello world!`
+Input: `pwr ipfs://QmebzauKAXoYbywLAYdBvKyPhWsDoHfkUC4wffWvjighKT Hello world!`
 Output: `Hello world!`
 
-Input: `pwr Qm Hello world!`
+Input: `pwr QmebzauKAXoYbywLAYdBvKyPhWsDoHfkUC4wffWvjighKT Hello world!`
 Output: `Hello world!`
