@@ -1,7 +1,7 @@
 {
   "name": "@nerfzael/http-server-plugin-wrapper",
   "description": "HTTP Server plugin wrapper",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "repository": {
     "type": "git",
