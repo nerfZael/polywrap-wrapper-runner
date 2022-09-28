@@ -1,7 +1,7 @@
 {
   "name": "@nerfzael/http-server-plugin-wrapper",
   "description": "HTTP Server plugin wrapper",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
     "build"
   ],
   "scripts": {
-    "build": "rimraf ./build && yarn codegen && tsc --project tsconfig.build.json",
+    "build": "rimraf ./build && tsc --project tsconfig.build.json",
     "codegen": "polywrap codegen",
     "lint": "eslint --color -c ../../../../.eslintrc.js src/",
     "test": "jest --passWithNoTests --runInBand --verbose",
@@ -22,6 +22,7 @@
   "dependencies": {
     "@polywrap/core-js": "0.8.0",
     "@polywrap/msgpack-js": "0.8.0",
+    "@polywrap/uri-resolvers-js": "0.8.0",
     "connect-timeout": "1.9.0",
     "cors": "2.8.5",
     "express": "4.18.1"

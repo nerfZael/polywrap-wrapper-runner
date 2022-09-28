@@ -1,0 +1,4 @@
+#import { Module, HttpResponse } into HttpServer from "wrap://ens/http-server.eth"
+
+type Module implements HttpServer_Module {
+}
