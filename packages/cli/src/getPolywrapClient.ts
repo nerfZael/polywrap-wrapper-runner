@@ -22,6 +22,8 @@ import { FileSystemCacheResolver } from "./resolvers/FileSystemCacheResolver";
 import { loggerPlugin } from "@polywrap/logger-plugin-js";
 import { CustomWrapperCache } from "./CustomWrapperCache";
 import { PwrCommandsResolver } from "./resolvers/PwrCommandsResolver";
+import { httpServerPlugin } from "@nerfzael/http-server-plugin-wrapper";
+import { CustomPolywrapClient } from "./CustomPolywrapClient";
 
 export const allAccessControlledUris = [
   "wrap://ens/ens-resolver.polywrap.eth",
@@ -36,6 +38,7 @@ export const allAccessControlledUris = [
   "wrap://ens/ipfs.polywrap.eth",
   "wrap://ens/fs.polywrap.eth",
   "wrap://ens/fs-resolver.polywrap.eth",
+  "wrap://ens/http-server.eth",
 ];
 
 export let accessControlledUris: string[] = [
@@ -161,6 +164,10 @@ export const getPolywrapClient = () => {
     {
       uri: "wrap://ens/logger.core.polywrap.eth",
       plugin: loggerPlugin({})
+    },
+    {
+      uri: "wrap://ens/http-server.eth",
+      plugin: httpServerPlugin({})
     }
   ];
 
@@ -178,7 +185,7 @@ export const getPolywrapClient = () => {
   );
 
   const client = process.env.INFURA_PROJECT_ID
-    ? new PolywrapClient(
+    ? new CustomPolywrapClient(
       {
         envs,
         interfaces,
@@ -211,7 +218,7 @@ export const getPolywrapClient = () => {
         ],
         resolver,
       }, { noDefaults: true})
-    : new PolywrapClient({
+    : new CustomPolywrapClient({
         envs,
         interfaces,
         plugins: [
