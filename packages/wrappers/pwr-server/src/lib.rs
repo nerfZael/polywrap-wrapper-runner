@@ -10,7 +10,7 @@ struct ClientInvokeBody {
   uri: String,
   method: String,
   args: Vec<u8>,
-} 
+}
 
 pub fn main(args: ArgsMain) -> u8 {
     let port = if args.args.len() > 0 {
@@ -52,19 +52,13 @@ pub fn main(args: ArgsMain) -> u8 {
 }
 
 pub fn on_start(_: ArgsOnStart) -> bool {
-    LoggerModule::log(&ArgsLog {
-        level: LoggerLogLevel::INFO,
-        message: "Server started".to_string(),
-    }).unwrap();
+    log("Server started".to_string());
 
     true
 }
 
 pub fn route_home(_: ArgsRouteHome) -> HttpServerResponse {
-    LoggerModule::log(&ArgsLog {
-        level: LoggerLogLevel::INFO,
-        message: "Home route".to_string(),
-    }).unwrap();
+    log("Home route");
 
     HttpServerResponse {
         status_code: 200,
