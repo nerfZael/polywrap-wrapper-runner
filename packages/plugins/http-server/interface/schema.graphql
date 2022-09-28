@@ -3,8 +3,20 @@ type Module {
 }
 
 type WrapperCallback {
-    uri: String!
-    method: String!
+  uri: String!
+  method: String!
+}
+
+type Request {
+  params: [KeyValuePair!]!
+  query: [KeyValuePair!]!
+  body: JSON
+}
+
+type Response {
+  headers: [KeyValuePair!]
+  data: Bytes
+  statusCode: UInt32!
 }
 
 type Route {
@@ -24,12 +36,6 @@ enum HttpMethod {
 
 type Result {
   ok: Boolean!
-}
-
-type HttpResponse {
-  headers: [KeyValuePair!]
-  data: Bytes
-  statusCode: UInt32!
 }
 
 type KeyValuePair {
