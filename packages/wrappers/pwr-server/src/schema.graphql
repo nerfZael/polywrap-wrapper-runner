@@ -1,9 +1,10 @@
 #import { Module } into PwrApp from "wrap://ens/pwr-app.eth"
 #import { Module } into Logger from "wrap://ens/logger.core.polywrap.eth"
-#import { Module, HttpResponse, KeyValuePair } into HttpServer from "wrap://ens/http-server.eth"
+#import { Module, Response, KeyValuePair, Request } into HttpServer from "wrap://ens/http-server.eth"
 #import { Module, InvocationResult } into WrapClient from "wrap://ens/wrap-client.eth"
 
 type Module implements PwrApp_Module {
   onStart: Boolean!
-  routeHome(params: [HttpServer_KeyValuePair!]!, query: [HttpServer_KeyValuePair!]!): HttpServer_HttpResponse!
+  routeHome(request: HttpServer_Request!): HttpServer_Response!
+  routeClientInvoke(request: HttpServer_Request!): HttpServer_Response!
 }
