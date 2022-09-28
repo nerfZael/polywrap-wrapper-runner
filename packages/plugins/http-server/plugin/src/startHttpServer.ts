@@ -4,7 +4,7 @@ import cors from "cors";
 import timeout from "connect-timeout";
 import http from "http";
 import { handleError } from "./handleError";
-import { HttpServer_HttpMethodEnum, HttpServer_HttpResponse, HttpServer_Route, HttpServer_WrapperCallback } from "./wrap";
+import { HttpServer_HttpMethodEnum, HttpServer_Response, HttpServer_Route, HttpServer_WrapperCallback } from "./wrap";
 import { buildCleanUriHistory } from "@polywrap/uri-resolvers-js";
 
 export const startHttpServer = async (port: number, requestTimeout: number, routes: HttpServer_Route[], onStart: HttpServer_WrapperCallback | undefined, client: Client): Promise<http.Server> => {
@@ -34,13 +34,18 @@ export const startHttpServer = async (port: number, requestTimeout: number, rout
   }));
 
   for (const route of routes) {
-    const handler = handleError(async (req: any, res: any) => {
-      const result = await client.invoke<HttpServer_HttpResponse>({
+    const handler = handleError(async (req: Request, res: Response) => {
+      const result = await client.invoke<HttpServer_Response>({
         uri: route.handler.uri,
         method: route.handler.method,
         args: {
-          params: Object.keys(req.params).map(x => ({ key: x, value: req.params[x] })),
-          query: Object.keys(req.query).map(x => ({ key: x, value: req.query[x] })),
+          request: {
+            params: Object.keys(req.params).map(x => ({ key: x, value: req.params[x] })),
+            query: Object.keys(req.query).map(x => ({ key: x, value: req.query[x] })),
+            body: req.body
+              ? JSON.stringify(req.body)
+              : undefined,
+          }
         }
       });
 
@@ -94,7 +99,7 @@ export const startHttpServer = async (port: number, requestTimeout: number, rout
   return new Promise<http.Server>((resolve) => {
     server.listen(port, async () => {
       if (onStart) {
-        await client.invoke<HttpServer_HttpResponse>({
+        await client.invoke({
           uri: onStart.uri,
           method: onStart.method,
           args: {}
