@@ -10,7 +10,6 @@ import { ipfsEnsContenthashResolverPlugin } from "@nerfzael/ipfs-ens-contenthash
 import { ocrEnsContenthashResolverPlugin } from "@nerfzael/ocr-ens-contenthash-resolver-plugin-wrapper";
 import { wrapClientPlugin } from "@nerfzael/wrap-client-plugin-wrapper";
 import {
-  WrapperCache,
   PackageToWrapperCacheResolver,
   RecursiveResolver,
   buildUriResolver,
@@ -23,6 +22,7 @@ import { loggerPlugin } from "@polywrap/logger-plugin-js";
 import { CustomWrapperCache } from "./CustomWrapperCache";
 import { PwrCommandsResolver } from "./resolvers/PwrCommandsResolver";
 import { httpServerPlugin } from "@nerfzael/http-server-plugin-wrapper";
+import { ipfsPlugin as wrapIpfsPlugin } from "@nerfzael/ipfs-plugin-wrapper";
 import { CustomPolywrapClient } from "./CustomPolywrapClient";
 
 export const allAccessControlledUris = [
@@ -39,6 +39,7 @@ export const allAccessControlledUris = [
   "wrap://ens/fs.polywrap.eth",
   "wrap://ens/fs-resolver.polywrap.eth",
   "wrap://ens/http-server.eth",
+  "wrap://ens/wrap-ipfs.eth",
 ];
 
 export let accessControlledUris: string[] = [
@@ -168,6 +169,10 @@ export const getPolywrapClient = () => {
     {
       uri: "wrap://ens/http-server.eth",
       plugin: httpServerPlugin({})
+    },
+    {
+      uri: "wrap://ens/wrap-ipfs.eth",
+      plugin: wrapIpfsPlugin({})
     }
   ];
 
