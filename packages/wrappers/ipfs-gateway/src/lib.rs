@@ -5,7 +5,30 @@ use wrap::{*, imported::{ArgsLog, ArgsResolve, ArgsCreate}};
 
 #[derive(Serialize, Deserialize)]
 struct ResolveResponse {
-  path: String
+    path: String
+}
+
+#[derive(Serialize, Deserialize)]
+struct AddBody {
+    files: Vec<RequestFile>
+}
+
+struct InMemoryFile {
+    path: String,
+    content: Option<Vec<u8>>
+}
+
+struct IpfsAddedFile {
+    path: String,
+    hash: String,
+    size: u32
+}
+
+#[derive(Serialize, Deserialize)]
+struct AddedFile {
+    Name: String,
+    Hash: String,
+    Size: u32
 }
 
 pub fn main(args: ArgsMain) -> u8 {
@@ -92,10 +115,98 @@ pub fn route_resolve(args: ArgsRouteResolve) -> HttpServerResponse {
             })
         }
         Err(err) => {
-            log("/api/v0/resolve Error".to_string());
+            log("/api/v0/mresolve Error".to_string());
             to_error_response(err)
         }
     }
+}
+fn prefix(words: Vec<String>) -> String {
+    // check border cases size 1 array and empty first word)
+    if words.len() <= 1 { return words.first() || ""; }
+    let i = 0;
+    // while all words have the same character at position i, increment i
+    while(words[0][i] && words.every(|w| w[i] == words[0][i])) {
+        i+=1;
+    }
+    // prefix is the substring from the beginning to the last successfully checked i
+    return words[0].substr(0, i);
+}
+
+fn strip_base_path(files: Vec<InMemoryFile>) -> Vec<InMemoryFile> {
+    let base_path = prefix(files.iter().map(|f| f.path).collect());
+  
+    return files.iter().map(|file| ({
+      path: path.relative(basePath, file.path) ?? '.',
+      content: file.content
+    })).filter(|file| !!file.path)
+    .collect();
+  };
+  
+pub fn route_add(args: ArgsRouteAdd) -> HttpServerResponse {
+  if args.request.files.is_empty() {
+    return to_error_response("No files were uploaded".to_string());
+  }
+
+  let files: Vec<RequestFile> = args.request.files;
+
+  let files_to_add = files.iter().map(|x| {
+    let path_to_file = x.originalname;
+
+    //If the file is a directory, we don't add the buffer, otherwise we get a different CID than expected
+    if x.mimetype == "application/x-directory" {
+      InMemoryFile {
+        path: path_to_file,
+        content: None
+      }
+    } else {
+      InMemoryFile {
+        path: path_to_file,
+        content: Some(x.buffer)
+      }
+    }
+  });
+
+  let sanitizedFiles = stripBasePath(files_to_add);
+  let result = this.deps.validationService.validateInMemoryWrapper(sanitizedFiles);
+ 
+  if !result.valid {
+    return to_error_response("Upload is not a valid wrapper. \nReason: ${result.failReason}");
+  }
+
+  let add_files_result = addFilesToIpfs(
+    sanitizedFiles,
+    { onlyHash: !!req.query["only-hash"] },
+    ipfs
+  );
+
+  log("Gateway add: ".to_string() + &root_cid);
+
+  if !add_files_result.root_cid.is_none() {
+    return to_error_response("IPFS verification failed after upload. Upload is not a directory");
+  }
+
+  if (!ipfsResult.valid) {
+    return to_error_response("IPFS verification failed after upload. Upload is not a valid wrapper. \nReason: ${ipfsResult.failReason}");
+  }
+
+  return to_json_response(
+    added_files.map(|x| {
+      AddedFile {
+        path: x.path,
+        hash: x.cid,
+        size: x.size,
+      };
+    })
+  );
+
+
+  for (const file of addedFiles) {
+    res.write(JSON.stringify({
+      Name: file.path,
+      Hash: file.cid.toString(),
+      Size: file.size,
+    }) + "\n");
+  }
 }
 
 fn to_json_response<T: Serialize>(data: T) -> HttpServerResponse {
@@ -114,7 +225,7 @@ fn to_json_response<T: Serialize>(data: T) -> HttpServerResponse {
     }    
 }
 
-fn to_error_response(message: String) -> HttpServerResponse {
+fn to_error_response<S: Into<String>>(message: S) -> HttpServerResponse {
     HttpServerResponse {
         status_code: 500,
         headers: Some(vec![HttpServerKeyValuePair {

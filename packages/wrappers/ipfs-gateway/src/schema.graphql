@@ -7,4 +7,22 @@ type Module implements PwrApp_Module {
   onStart: Boolean!
   routeHome(request: HttpServer_Request!): HttpServer_Response!
   routeResolve(request: HttpServer_Request!): HttpServer_Response!
+  routeAdd(request: AddRequest!): HttpServer_Response!
+}
+
+type AddRequest {
+  params: [HttpServer_KeyValuePair!]!
+  query: [HttpServer_KeyValuePair!]!
+  body: JSON
+  files: [RequestFile!]!
+}
+
+type RequestFile {
+  fieldname: String!
+  originalname: String!
+  encoding: String!
+  mimetype: String!
+  filename: String!
+  path: String!
+  buffer: Bytes!
 }
